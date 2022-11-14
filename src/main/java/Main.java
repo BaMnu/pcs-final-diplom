@@ -18,55 +18,50 @@ public class Main {
         BooleanSearchEngine engine = new BooleanSearchEngine(new File("pdfs"));
 
         try (ServerSocket server = new ServerSocket(PORT)) {
-                System.out.println("Server started");
+            System.out.println("Server started");
 
-                while (true) {
-                    try (Socket socket = server.accept();
-                         BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-                         PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
-                         Scanner scanner = new Scanner(textFile)) {
+            while (true) {
+                try (Socket socket = server.accept();
+                     BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+                     PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+                     Scanner scanner = new Scanner(textFile)) {
 
-                        ArrayList<String> wordsList = new ArrayList<>();
-                        Set<String> stopWords = new HashSet<>();
-                        while (scanner.hasNextLine()) {
-                            stopWords.add(scanner.nextLine());
-                        }
-
-                        DefaultPrettyPrinter prettyPrinter = new DefaultPrettyPrinter();
-                        prettyPrinter.indentArraysWith(DefaultIndenter.SYSTEM_LINEFEED_INSTANCE);
-
-                        System.out.println("Client connection accepted");
-
-                        String[] extract = StringUtils.substringsBetween(in.readLine(), "{", "}");
-                        for (String cell : extract) {
-
-                            String[] words = cell.split("\\P{IsAlphabetic}+");
-
-                            for (String word : words) {
-                                String wordCompare = word.toLowerCase();
-                                if (!stopWords.contains(wordCompare)) {
-                                    wordsList.add(word);
-
-                                }
-
-                            }
-
-                            for (String result : wordsList) {
-                                out.println(
-                                        mapper
-                                                .writer(prettyPrinter)
-                                                .writeValueAsString(engine.search(result))
-                                );
-                            }
-
-                        }
+                    ArrayList<String> wordsList = new ArrayList<>();
+                    Set<String> stopWords = new HashSet<>();
+                    while (scanner.hasNextLine()) {
+                        stopWords.add(scanner.nextLine());
                     }
-                }
 
-            } catch (IOException io) {
-            System.out.println("Error. Can't start server.");
-                throw new IOException(io);
+                    DefaultPrettyPrinter prettyPrinter = new DefaultPrettyPrinter();
+                    prettyPrinter.indentArraysWith(DefaultIndenter.SYSTEM_LINEFEED_INSTANCE);
+
+                    System.out.println("Client connection accepted");
+
+                    String[] words = in.readLine().split("\\P{IsAlphabetic}+");
+
+                    for (String word : words) {
+                        String wordCompare = word.toLowerCase();
+                        if (!stopWords.contains(wordCompare)) {
+                            wordsList.add(word);
+                        }
+
+                    }
+
+                    for (String result : wordsList) {
+                        out.println(
+                                mapper
+                                        .writer(prettyPrinter)
+                                        .writeValueAsString(engine.search(result))
+                        );
+                    }
+
+                }
             }
+
+        } catch (IOException io) {
+            System.out.println("Error. Can't start server.");
+            throw new IOException(io);
+        }
 
     }
 }
