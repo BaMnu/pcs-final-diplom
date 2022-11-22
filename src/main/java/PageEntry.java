@@ -1,20 +1,14 @@
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import java.util.*;
-
 public class PageEntry implements Comparable<PageEntry> {
-
     @JsonProperty("pdf") private final String pdfName;
     @JsonProperty("page") private final int page;
-    @JsonProperty("count") private int count;
-    @JsonIgnore private final Map<String, Integer> countMap;
+    @JsonProperty("count") private final int count;
 
-    public PageEntry(String pdfName, int page, Map<String, Integer> countMap) {
+    public PageEntry(String pdfName, int page, int count) {
         this.pdfName = pdfName;
         this.page = page;
-        this.countMap = countMap;
-        countMap.keySet().forEach(key -> count = countMap.get(key));
+        this.count = count;
     }
 
     protected String getPdfName() {
@@ -24,9 +18,6 @@ public class PageEntry implements Comparable<PageEntry> {
         return page;
     }
 
-    protected Map<String, Integer> getCountMap() {
-        return countMap;
-    }
     protected int getCount() {
         return count;
     }

@@ -8,7 +8,7 @@ import java.util.*;
 import java.util.stream.*;
 
 public class BooleanSearchEngine implements SearchEngine {
-    private final List<PageEntry> listPageEntry = new ArrayList<>();
+    private final Map<String, List<PageEntry>> wordList = new HashMap<>();
 
     public BooleanSearchEngine(File pdfsDir) throws IOException {
 
@@ -33,16 +33,12 @@ public class BooleanSearchEngine implements SearchEngine {
                             }
                             word = word.toLowerCase();
                             wordCount.put(word, wordCount.getOrDefault(word, 0) + 1);
+
                         }
 
                         for (Map.Entry<String, Integer> entry : wordCount.entrySet()) {
-                            String key = entry.getKey();
-                            Integer value = entry.getValue();
-                            Map<String, Integer> eachWord = new HashMap<>();
-                            eachWord.put(key, value);
-                            PageEntry pageEntry = new PageEntry(name, pageNum, eachWord);
-                            listPageEntry.add(pageEntry);
-
+                            PageEntry pageEntry = new PageEntry(name, pageNum, wordCount.get(entry.getKey()));
+                            wordList.computeIfAbsent(entry.getKey(), k -> new ArrayList<>()).add(pageEntry);
                         }
                     }
 
@@ -54,8 +50,6 @@ public class BooleanSearchEngine implements SearchEngine {
 
     @Override
     public List<PageEntry> search(String word) {
-        return listPageEntry.stream()
-                .filter(page -> page.getCountMap().containsKey(word.toLowerCase()))
-                .sorted().collect(Collectors.toList());
+        return wordList.get(word).stream().sorted().collect(Collectors.toList());
     }
 }

@@ -10,7 +10,7 @@ public class Client {
              BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
              PrintWriter out = new PrintWriter(socket.getOutputStream(), true)) {
 
-            String request = "бизнес план и";
+            String request = "бизнес и план";
             out.println(request);
 
             in.lines().forEach(System.out::println);

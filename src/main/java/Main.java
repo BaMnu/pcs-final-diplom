@@ -1,7 +1,6 @@
 import com.fasterxml.jackson.core.util.DefaultIndenter;
 import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.maven.surefire.shared.lang3.StringUtils;
 
 import java.io.*;
 import java.net.ServerSocket;
