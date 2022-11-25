@@ -55,9 +55,6 @@ public class BooleanSearchEngine implements SearchEngine {
 
     @Override
     public List<PageEntry> search(String word) {
-        if (wordList.get(word) == null) {
-            return new ArrayList<>();
-        }
-        return wordList.get(word);
+        return wordList.get(word) == null ? new ArrayList<PageEntry>() : wordList.get(word);
     }
 }
