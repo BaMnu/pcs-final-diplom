@@ -39,17 +39,25 @@ public class BooleanSearchEngine implements SearchEngine {
                         for (Map.Entry<String, Integer> entry : wordCount.entrySet()) {
                             PageEntry pageEntry = new PageEntry(name, pageNum, wordCount.get(entry.getKey()));
                             wordList.computeIfAbsent(entry.getKey(), k -> new ArrayList<>()).add(pageEntry);
+
+                            for (List<PageEntry> list : wordList.values()) {
+                                Collections.sort(list);
+                            }
+
                         }
+
                     }
-
                 }
-            }
 
+            }
         }
     }
 
     @Override
     public List<PageEntry> search(String word) {
-        return wordList.get(word).stream().sorted().collect(Collectors.toList());
+        if (wordList.get(word) == null) {
+            return new ArrayList<>();
+        }
+        return wordList.get(word);
     }
 }
